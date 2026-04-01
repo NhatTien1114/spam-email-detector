@@ -248,7 +248,7 @@ Input (256) → Embedding (20000×128) → SpatialDropout1D (0.2)
 ```
 
 ```
-┌───────────────────────────────���─────────────┐
+┌───────────────────���─────────────────────┐
 │              Input (MAX_LEN=256)            │
 ├─────────────────────────────────────────────┤
 │         Embedding (20000 × 128)             │
@@ -256,8 +256,8 @@ Input (256) → Embedding (20000×128) → SpatialDropout1D (0.2)
 │          SpatialDropout1D (0.2)             │
 ├─────────────────────────────────────────────┤
 │     Bidirectional LSTM (128 units)          │
-│       ← ← ← LSTM ← ← ←                    │
-│       → → → LSTM → → →                     │
+│       ← ← ← LSTM ← ← ←                      │
+│       → → → LSTM → → →                      │
 ├─────────────────────────────────────────────┤
 │          GlobalMaxPooling1D                 │
 ├─────────────────────────────────────────────┤
@@ -348,38 +348,38 @@ Input (256) → Embedding (20000×128) → SpatialDropout1D (0.2)
 <details>
 <summary>📊 Phân bố dữ liệu (Click để xem)</summary>
 
-![Class Distribution](results/class_distribution.png)
-![Text Length Distribution](results/text_length_distribution.png)
+[Class Distribution](results/class_distribution.png)
+[Text Length Distribution](results/text_length_distribution.png)
 
 </details>
 
 <details>
 <summary>📈 Learning Curves (Click để xem)</summary>
 
-![BiLSTM Learning Curves](results/learning_curves_bilstm.png)
-![BiGRU+Attention Learning Curves](results/learning_curves_bigru_attention.png)
+[BiLSTM Learning Curves](results/learning_curves_bilstm.png)
+[BiGRU+Attention Learning Curves](results/learning_curves_bigru_attention.png)
 
 </details>
 
 <details>
 <summary>🎯 Evaluation — Confusion Matrix & PR Curve (Click để xem)</summary>
 
-![BiLSTM Evaluation](results/eval_bilstm.png)
-![BiGRU+Attention Evaluation](results/eval_bigru_attention.png)
+[BiLSTM Evaluation](results/eval_bilstm.png)
+[BiGRU+Attention Evaluation](results/eval_bigru_attention.png)
 
 </details>
 
 <details>
 <summary>🏆 So sánh tổng hợp (Click để xem)</summary>
 
-![Final Comparison](results/final_comparison_all_models.png)
+[Final Comparison](results/final_comparison_all_models.png)
 
 </details>
 
 <details>
 <summary>🔍 Phân tích lỗi (Click để xem)</summary>
 
-![Error Analysis](results/error_analysis.png)
+[Error Analysis](results/error_analysis.png)
 
 </details>
 
