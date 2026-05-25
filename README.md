@@ -12,7 +12,7 @@
 [![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
 
 **Deep Learning Course — Topic #20**  
-Ho Chi Minh City University of Technology and Education (HCMUTE) · 2025–2026
+Ho Chi Minh City University of Industry (IUH) · 2025–2026
 
 </div>
 
@@ -80,16 +80,29 @@ spam-email-detection/
 
 ## Dataset
 
+### Phase 1 — Midterm (`midterm_exam/spam_ham_dataset.csv`)
+
 | Property | Value |
 |:---------|:------|
 | Source | [Enron Spam Dataset](https://github.com/MWiechmann/enron_spam_data) |
+| File | `spam_ham_dataset.csv` |
 | Total samples | 5,170 emails |
 | Ham (legitimate) | 3,672 — 71.0% |
 | Spam | 1,498 — 29.0% |
 | Ham : Spam ratio | ≈ 2.45 : 1 |
 | Split | 70% train / 15% val / 15% test |
 
-**Phase 2 augmentation:** the training split was upsampled with synonym replacement and back-translation on spam samples to address class imbalance, producing `spam_ham_dataset_augmented.csv`.
+Used by the BiLSTM and BiGRU+Attention models in `midterm_exam/`.
+
+### Phase 2 — Final (`final_exam/spam_ham_dataset_augmented.csv`)
+
+| Property | Value |
+|:---------|:------|
+| Source | Augmented from Enron Spam Dataset |
+| File | `spam_ham_dataset_augmented.csv` |
+| Split | 70% train / 15% val / 15% test |
+
+**Augmentation:** the training split was upsampled with synonym replacement and back-translation on spam samples to address class imbalance. Used by the BERT MoE model in `final_exam/`.
 
 **Preprocessing pipeline:**
 
@@ -324,6 +337,63 @@ Both notebooks are designed to run on Google Colab with a GPU runtime.
 3. Mount your Google Drive when prompted and set the `DRIVE_PATH` variable to point to your dataset folder.
 4. Run cells sequentially from top to bottom.
 
+### Option B — Use Pre-trained Models (Skip Training)
+
+To load saved models and run inference without retraining, upload the `email_spam_bertmoe/` folder to your Google Drive first:
+
+**Step 1 — Upload to Google Drive**
+
+1. Go to [Google Drive](https://drive.google.com) and sign in.
+2. Upload the entire `email_spam_bertmoe/` folder (drag & drop or **+ New → Folder upload**).
+3. Place it under `My Drive/` so the path becomes:
+   ```
+   My Drive/email_spam_bertmoe/
+   ```
+
+**Step 2 — Mount Drive in Colab**
+
+```python
+from google.colab import drive
+drive.mount('/content/drive')
+
+MODEL_DIR = '/content/drive/MyDrive/email_spam_bertmoe'
+```
+
+**Step 3 — Load BiLSTM model (no training needed)**
+
+```python
+import pickle
+from tensorflow import keras
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+
+model = keras.models.load_model(f"{MODEL_DIR}/spam_model_bilstm.keras")
+
+with open(f"{MODEL_DIR}/tokenizer_bilstm.pickle", "rb") as f:
+    tokenizer = pickle.load(f)
+
+def predict_bilstm(text, threshold=0.5):
+    seq = tokenizer.texts_to_sequences([text])
+    padded = pad_sequences(seq, maxlen=256, padding="post", truncating="post")
+    prob = model.predict(padded, verbose=0)[0][0]
+    label = "SPAM" if prob >= threshold else "HAM"
+    print(f"{label}  |  confidence: {prob:.4f}")
+```
+
+**Step 4 — Load BERT MoE model (no training needed)**
+
+```python
+import torch
+from transformers import BertTokenizer
+
+tokenizer = BertTokenizer.from_pretrained(f"{MODEL_DIR}/bert_moe_best")
+
+# Instantiate BertMoEClassifier (defined in final_exam/BiLSTMandBERT_MoE.ipynb), then:
+# model.load_state_dict(torch.load(f"{MODEL_DIR}/bert_moe_adamw.pt", map_location="cpu"))
+# model.eval()
+```
+
+> The `email_spam_bertmoe/` folder contains all `.keras`, `.pt`, `.pickle`, and HuggingFace checkpoint files needed for inference. No training step is required.
+
 ### Option B — Local Installation
 
 ```bash
@@ -397,7 +467,7 @@ def predict_bert_moe(text, model, tokenizer, threshold=0.5):
 | Tống Nguyễn Nhật Tiến | 23684961 |
 | Nguyễn Tiến Phát | 23689101 |
 
-**Course:** Deep Learning · Ho Chi Minh City University of Technology and Education (HCMUTE)  
+**Course:** Deep Learning · Ho Chi Minh City University of Industry (IUH)  
 **Academic year:** 2025–2026
 
 ---
@@ -418,6 +488,6 @@ def predict_bert_moe(text, model, tokenizer, threshold=0.5):
 
 <div align="center">
 
-*Made for the Deep Learning course at HCMUTE · 2025–2026*
+*Made for the Deep Learning course at IUH · 2025–2026*
 
 </div>
