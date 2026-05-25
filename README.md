@@ -100,6 +100,10 @@ Used by the BiLSTM and BiGRU+Attention models in `midterm_exam/`.
 |:---------|:------|
 | Source | Augmented from Enron Spam Dataset |
 | File | `spam_ham_dataset_augmented.csv` |
+| Total samples | 7,990 emails |
+| Ham (legitimate) | 3,531 — 44.5% |
+| Spam | 4,459 — 55.5% |
+| Ham : Spam ratio | ≈ 0.79 : 1 |
 | Split | 70% train / 15% val / 15% test |
 
 **Augmentation:** the training split was upsampled with synonym replacement and back-translation on spam samples to address class imbalance. Used by the BERT MoE model in `final_exam/`.
@@ -394,7 +398,7 @@ tokenizer = BertTokenizer.from_pretrained(f"{MODEL_DIR}/bert_moe_best")
 
 > The `email_spam_bertmoe/` folder contains all `.keras`, `.pt`, `.pickle`, and HuggingFace checkpoint files needed for inference. No training step is required.
 
-### Option B — Local Installation
+### Option C — Local Installation
 
 ```bash
 git clone https://github.com/NhatTien1114/spam-email-detection.git
