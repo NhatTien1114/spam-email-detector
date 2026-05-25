@@ -1,391 +1,182 @@
 <div align="center">
 
-# 📧 Deep Learning Spam Email Detection
+# Spam Email Detection with Deep Learning
 
-### Phát hiện Spam Email sử dụng BiLSTM và BiGRU + Attention
+### A Comparative Study of Recurrent Neural Networks and BERT-based Mixture of Experts
 
-[![Python](https://img.shields.io/badge/Python-3.8%2B-blue?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
-[![TensorFlow](https://img.shields.io/badge/TensorFlow-2.x-FF6F00?style=for-the-badge&logo=tensorflow&logoColor=white)](https://www.tensorflow.org/)
-[![Keras](https://img.shields.io/badge/Keras-Deep%20Learning-D00000?style=for-the-badge&logo=keras&logoColor=white)](https://keras.io/)
-[![Colab](https://img.shields.io/badge/Google%20Colab-Ready-F9AB00?style=for-the-badge&logo=googlecolab&logoColor=white)](https://colab.research.google.com/)
-[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
+[![Python](https://img.shields.io/badge/Python-3.10%2B-blue?style=flat-square&logo=python)](https://www.python.org/)
+[![TensorFlow](https://img.shields.io/badge/TensorFlow-2.x-FF6F00?style=flat-square&logo=tensorflow)](https://www.tensorflow.org/)
+[![PyTorch](https://img.shields.io/badge/PyTorch-2.x-EE4C2C?style=flat-square&logo=pytorch)](https://pytorch.org/)
+[![HuggingFace](https://img.shields.io/badge/HuggingFace-Transformers-FFD21E?style=flat-square&logo=huggingface)](https://huggingface.co/)
+[![Colab](https://img.shields.io/badge/Google%20Colab-Ready-F9AB00?style=flat-square&logo=googlecolab)](https://colab.research.google.com/)
+[![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Accuracy-95%25%2B-brightgreen?style=flat-square" alt="Accuracy"/>
-  <img src="https://img.shields.io/badge/Models-BiLSTM%20%7C%20BiGRU%2BAttention-blue?style=flat-square" alt="Models"/>
-  <img src="https://img.shields.io/badge/Dataset-Enron%20Spam-orange?style=flat-square" alt="Dataset"/>
-  <img src="https://img.shields.io/github/last-commit/NhatTien1114/spam-email-detection?style=flat-square" alt="Last Commit"/>
-  <img src="https://img.shields.io/github/repo-size/NhatTien1114/spam-email-detection?style=flat-square" alt="Repo Size"/>
-</p>
-
-<p align="center">
-  <b>Đồ án môn Học sâu (Deep Learning) — Đề tài #20</b><br/>
-  <i>Xây dựng hệ thống phát hiện spam email sử dụng mạng nơ-ron hồi quy sâu với cơ chế Attention</i>
-</p>
-
-[Tổng quan](#-tổng-quan) •
-[Demo](#-demo) •
-[Cài đặt](#-cài-đặt) •
-[Sử dụng](#-sử-dụng) •
-[Kiến trúc](#-kiến-trúc-mô-hình) •
-[Kết quả](#-kết-quả) •
-[Tài liệu](#-tài-liệu-tham-khảo)
+**Deep Learning Course — Topic #20**  
+Ho Chi Minh City University of Technology and Education (HCMUTE) · 2025–2026
 
 </div>
 
 ---
 
-## 📋 Tổng quan
+## Abstract
 
-Dự án này xây dựng hệ thống **phát hiện spam email tự động** sử dụng các mô hình Deep Learning. Hệ thống có khả năng phân loại email thành **Spam** (thư rác) hoặc **Ham** (thư hợp lệ) dựa trên nội dung văn bản.
-
-### 🎯 Mục tiêu
-
-- Phân tích bài toán phân loại nhị phân spam/ham và các thách thức đặc thù của dữ liệu email
-- Triển khai và so sánh **2 mô hình Deep Learning**: BiLSTM (Baseline) và BiGRU + Attention (Nâng cao)
-- Thực hiện **6 thí nghiệm** so sánh optimizer (Adam vs SGD) và regularization (Dropout vs Weight Decay)
-- Xây dựng hệ thống demo phân loại email real-time
-
-### ✨ Điểm nổi bật
-
-- 🧠 **Custom Attention Layer** — Cho phép mô hình tập trung vào từ khóa quan trọng
-- ⚖️ **Class Weight Balancing** — Xử lý hiệu quả dataset mất cân bằng (71% Ham / 29% Spam)
-- 💾 **Save & Load Model** — Lưu model trên Google Drive, không cần train lại
-- 🎮 **Interactive Demo** — Nhập email trực tiếp để phân loại spam/ham
-- 📊 **Comprehensive Evaluation** — Precision, Recall, F1, Confusion Matrix, PR Curve
+This project investigates automated spam email detection using deep learning. We conduct experiments across two phases: (1) a **midterm phase** comparing Bidirectional LSTM (BiLSTM) and Bidirectional GRU with Attention (BiGRU+Attention) under different optimizers and regularization strategies, and (2) a **final phase** that introduces a **BERT-based Mixture of Experts (MoE)** architecture fine-tuned on augmented email data. Experiments are evaluated on the Enron Spam dataset across accuracy, precision, recall, and F1-score. Results show that the BiLSTM baseline with Adam optimizer achieves the highest overall accuracy (99.50%), while BERT MoE with AdamW full fine-tuning reaches competitive performance (98.07%) with stronger generalization on noisy inputs.
 
 ---
 
-## 📁 Cấu trúc dự án
+## Table of Contents
+
+- [Repository Structure](#repository-structure)
+- [Dataset](#dataset)
+- [Methods](#methods)
+  - [Phase 1 — Recurrent Models (Midterm)](#phase-1--recurrent-models-midterm)
+  - [Phase 2 — BERT + Mixture of Experts (Final)](#phase-2--bert--mixture-of-experts-final)
+- [Experimental Setup](#experimental-setup)
+- [Results](#results)
+- [Getting Started](#getting-started)
+- [Authors](#authors)
+- [References](#references)
+
+---
+
+## Repository Structure
 
 ```
 spam-email-detection/
 │
-├── 📓 notebook/
-│   └── BaoCaoDoAnDeepLearning_V2.ipynb   # Notebook chính (chạy trên Colab)
+├── midterm_exam/                        # Phase 1: BiLSTM & BiGRU+Attention
+│   ├── BiLSTMandBiGRU+Attention.ipynb  # Main notebook (Colab)
+│   ├── spam_ham_dataset.csv            # Enron Spam dataset
+│   └── enron_spam_data.csv             # Raw Enron dataset
 │
-├── 📊 data/
-│   └── spam_ham_dataset.csv          # Dataset Enron Spam (5.5 MB)
+├── final_exam/                          # Phase 2: BiLSTM Baseline + BERT MoE
+│   ├── BiLSTMandBERT_MoE.ipynb         # Main notebook (Colab)
+│   ├── ReportSpamEmail.pdf             # Final written report
+│   ├── spam_ham_dataset.csv            # Enron Spam dataset
+│   └── spam_ham_dataset_augmented.csv  # Augmented training data
 │
-├── 🧠 models/                        # Thư mục lưu model (tạo tự động)
-│   ├── spam_model.keras              # Model tốt nhất (BiGRU+Attention)
-│   ├── bilstm_baseline.keras         # BiLSTM + Adam + Dropout
-│   ├── bilstm_sgd.keras              # BiLSTM + SGD + Dropout
-│   ├── bilstm_weight_decay.keras     # BiLSTM + AdamW + Weight Decay
-│   ├── bigru_attention.keras         # BiGRU+Attn + Adam + Dropout
-│   ├── bigru_attention_sgd.keras     # BiGRU+Attn + SGD + Dropout
-│   ├── bigru_attention_wd.keras      # BiGRU+Attn + AdamW + Weight Decay
-│   └── tokenizer.pickle              # Tokenizer đã fit
+├── email_spam_bertmoe/                  # Saved model artifacts (Final phase)
+│   ├── bilstm_baseline.keras           # BiLSTM + Adam + Dropout
+│   ├── bilstm_sgd.keras                # BiLSTM + SGD + Dropout
+│   ├── bilstm_weight_decay.keras       # BiLSTM + AdamW + Weight Decay
+│   ├── spam_model_bilstm.keras         # Best BiLSTM model
+│   ├── tokenizer_bilstm.pickle         # Fitted Keras tokenizer
+│   ├── bert_moe_adamw.pt               # BERT MoE + AdamW (full fine-tune)
+│   ├── bert_moe_sgd.pt                 # BERT MoE + SGD (full fine-tune)
+│   ├── bert_moe_frozen.pt              # BERT MoE + AdamW (frozen encoder)
+│   ├── bert_moe_best/                  # Best BERT MoE checkpoint (HuggingFace format)
+│   │   ├── config.json
+│   │   ├── model.safetensors
+│   │   ├── tokenizer.json
+│   │   └── tokenizer_config.json
+│   ├── experiment_results.csv          # Summary of all experiment metrics
+│   └── *.png                           # Training curves and evaluation plots
 │
-├── 📈 results/                        # Kết quả thí nghiệm
-│   ├── experiment_results.csv         # Bảng kết quả tổng hợp
-│   ├── class_distribution.png         # Biểu đồ phân bố lớp
-│   ├── text_length_distribution.png   # Biểu đồ độ dài text
-│   ├── learning_curves_*.png          # Learning curves các model
-│   ├── eval_*.png                     # Confusion matrix & PR curve
-│   ├── final_comparison_all_models.png
-│   └── error_analysis.png
-│
-├── 📄 report/
-│   ├── main.tex                       # Báo cáo LaTeX
-│   └── images/                        # Hình ảnh cho báo cáo
-│
-├── 📄 README.md
-├── 📄 requirements.txt
-└── 📄 LICENSE
+└── results/                            # Exported figures for report
+    └── *.png
 ```
 
 ---
 
-## 🚀 Demo
+## Dataset
 
-### Phân loại email mẫu
+| Property | Value |
+|:---------|:------|
+| Source | [Enron Spam Dataset](https://github.com/MWiechmann/enron_spam_data) |
+| Total samples | 5,170 emails |
+| Ham (legitimate) | 3,672 — 71.0% |
+| Spam | 1,498 — 29.0% |
+| Ham : Spam ratio | ≈ 2.45 : 1 |
+| Split | 70% train / 15% val / 15% test |
+
+**Phase 2 augmentation:** the training split was upsampled with synonym replacement and back-translation on spam samples to address class imbalance, producing `spam_ham_dataset_augmented.csv`.
+
+**Preprocessing pipeline:**
 
 ```python
-# Spam email
->>> predict_spam("Congratulations! You've won $1,000,000! Click here to claim now!")
-🚨 SPAM | Xác suất: 0.9847 (98.47%)
-
-# Ham email
->>> predict_spam("Hi team, reminder about our project meeting tomorrow at 10am.")
-✅ HAM  | Xác suất: 0.0123 (1.23%)
-```
-
-### Interactive Demo
-
-Sau khi chạy notebook, bạn có thể nhập bất kỳ nội dung email nào để phân loại:
-
-```
-📧 Nhập nội dung email: Buy cheap viagra online! Best prices!
-═══════════════════════════════════════════════
-📌 Kết quả  : 🚨 SPAM
-📌 Xác suất spam: 0.9921 (99.21%)
-📌 Độ tin cậy   : 0.9921 (99.21%)
-═══════════════════════════════════════════════
+def preprocess_email(text):
+    text = re.sub(r'^Subject:\s*', '', text)     # strip Subject: prefix
+    text = re.sub(r'<[^>]+>', ' ', text)          # remove HTML tags
+    text = re.sub(r'http[s]?://\S+', ' ', text)  # remove URLs
+    text = re.sub(r'\S+@\S+', ' ', text)          # remove email addresses
+    text = text.lower()
+    text = re.sub(r'[^a-z0-9\s]', ' ', text)     # keep alphanumeric only
+    return text.strip()
 ```
 
 ---
 
-## ⚙️ Cài đặt
+## Methods
 
-### Yêu cầu hệ thống
+### Phase 1 — Recurrent Models (Midterm)
 
-| Thành phần | Yêu cầu |
-|:-----------|:---------|
-| Python | 3.8+ |
-| TensorFlow | 2.x |
-| RAM | ≥ 8 GB (khuyến nghị 12 GB+) |
-| GPU | Khuyến nghị (NVIDIA T4/V100) |
-| Disk | ≥ 500 MB |
+**Notebook:** `midterm_exam/BiLSTMandBiGRU+Attention.ipynb`
 
-### Cách 1: Google Colab (Khuyến nghị) ⭐
+#### Model 1: BiLSTM Baseline
 
-1. Mở notebook trên Google Colab:
-
-   [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/NhatTien1114/spam-email-detector/blob/main/notebook/BaoCaoDoAnDeepLearning_V2.ipynb)
-
-2. Chọn Runtime → Change runtime type → **GPU (T4)**
-
-3. Chạy từng cell theo thứ tự
-
-### Cách 2: Local Installation
-
-```bash
-# Clone repository
-git clone https://github.com/NhatTien1114/spam-email-detector.git
-cd spam-email-detector
-
-# Tạo virtual environment
-python -m venv venv
-source venv/bin/activate        # Linux/macOS
-# venv\Scripts\activate         # Windows
-
-# Cài đặt dependencies
-pip install -r requirements.txt
+```
+Input (MAX_LEN=256)
+  └─ Embedding (20 000 × 128)
+      └─ SpatialDropout1D (0.2)
+          └─ Bidirectional LSTM (128 units)
+              └─ GlobalMaxPooling1D
+                  └─ Dense (64, ReLU) → Dropout (0.5)
+                      └─ Dense (32, ReLU)
+                          └─ Dense (1, Sigmoid)   →  Spam / Ham
 ```
 
-### Dependencies
+#### Model 2: BiGRU + Attention
 
-```txt
-tensorflow>=2.12.0
-scikit-learn>=1.2.0
-pandas>=1.5.0
-numpy>=1.23.0
-matplotlib>=3.6.0
-seaborn>=0.12.0
 ```
+Input (MAX_LEN=256)
+  └─ Embedding (20 000 × 128)
+      └─ SpatialDropout1D (0.2)
+          └─ Bidirectional GRU Layer 1 (128 units)
+              └─ Bidirectional GRU Layer 2 (64 units)
+                  ├─ Custom Attention Layer
+                  └─ GlobalMaxPooling1D
+                      └─ Concatenate
+                          └─ Dense (128) + BatchNorm + Dropout (0.5)
+                              └─ Dense (64) + Dropout (0.3)
+                                  └─ Dense (1, Sigmoid)   →  Spam / Ham
+```
+
+Key improvement over the baseline: the custom attention layer assigns learned scalar weights to each time step, allowing the model to focus on spam-discriminative tokens.
 
 ---
 
-## 📖 Sử dụng
+### Phase 2 — BERT + Mixture of Experts (Final)
 
-### 1. Huấn luyện mô hình từ đầu
+**Notebook:** `final_exam/BiLSTMandBERT_MoE.ipynb`
 
-Mở notebook và chạy tuần tự các cell từ **Phần 0** đến **Phần 16**:
+The advanced model replaces the recurrent encoder with a pre-trained `bert-base-uncased` backbone followed by a **Mixture of Experts (MoE)** classification head.
 
-```python
-# Phần 0: Mount Drive & Import
-# Phần 1-2: Load data & EDA
-# Phần 3-4: Tiền xử lý & Tokenization
-# Phần 5-8: Mô hình 1 (BiLSTM Baseline)
-# Phần 9-11: Thí nghiệm Optimizer & Regularization
-# Phần 12-16: Mô hình 2 (BiGRU + Attention)
+```
+Input token IDs + attention mask
+  └─ BERT Encoder (bert-base-uncased, 12 layers, 768-dim)
+      └─ [CLS] representation
+          └─ MoE Head
+              ├─ Expert 1: Linear (768 → 256) + ReLU + Dropout
+              ├─ Expert 2: Linear (768 → 256) + ReLU + Dropout
+              ├─ Expert 3: Linear (768 → 256) + ReLU + Dropout
+              └─ Gating Network: Softmax-weighted sum of expert outputs
+                  └─ Linear (256 → 1, Sigmoid)   →  Spam / Ham
 ```
 
-### 2. Load model đã train (không cần train lại)
+Three fine-tuning strategies were compared:
 
-```python
-import pickle
-from tensorflow import keras
-
-# Định nghĩa AttentionLayer (bắt buộc khi load model)
-class AttentionLayer(keras.layers.Layer):
-    # ... (xem code trong notebook)
-
-# Load model
-model = keras.models.load_model(
-    '/content/drive/MyDrive/dataset_dl/spam_model.keras',
-    custom_objects={'AttentionLayer': AttentionLayer}
-)
-
-# Load tokenizer
-with open('/content/drive/MyDrive/dataset_dl/tokenizer.pickle', 'rb') as f:
-    tokenizer = pickle.load(f)
-
-print("✅ Model loaded successfully!")
-```
-
-### 3. Dự đoán email mới
-
-```python
-def predict_spam(email_text, threshold=0.5):
-    clean_text = preprocess_email(email_text)
-    sequence = tokenizer.texts_to_sequences([clean_text])
-    padded = pad_sequences(sequence, maxlen=256, padding='post', truncating='post')
-    prob = model.predict(padded, verbose=0)[0][0]
-
-    if prob >= threshold:
-        print(f"🚨 SPAM | Xác suất: {prob:.4f} ({prob*100:.2f}%)")
-    else:
-        print(f"✅ HAM  | Xác suất: {prob:.4f} ({prob*100:.2f}%)")
-
-# Ví dụ
-predict_spam("URGENT: Your account will be suspended! Click here now!")
-predict_spam("Hey, are you free for lunch today?")
-```
+| Strategy | BERT weights | MoE head |
+|:---------|:------------|:---------|
+| AdamW — Full Fine-Tune | Updated | Updated |
+| SGD — Full Fine-Tune | Updated | Updated |
+| AdamW — Frozen Encoder | Frozen | Updated |
+| Zero-Shot | Frozen | Not trained |
 
 ---
 
-## 🧠 Kiến trúc mô hình
+## Experimental Setup
 
-### Mô hình 1 — BiLSTM Baseline
-
-```
-Input (256) → Embedding (20000×128) → SpatialDropout1D (0.2)
-    → Bidirectional LSTM (128) → GlobalMaxPooling1D
-    → Dense (64, ReLU) → Dropout (0.5) → Dense (32, ReLU)
-    → Dense (1, Sigmoid) → Spam/Ham
-```
-
-```
-┌───────────────────────────────���─────────────┐
-│              Input (MAX_LEN=256)            │
-├─────────────────────────────────────────────┤
-│         Embedding (20000 × 128)             │
-├─────────────────────────────────────────────┤
-│          SpatialDropout1D (0.2)             │
-├─────────────────────────────────────────────┤
-│     Bidirectional LSTM (128 units)          │
-│       ← ← ← LSTM ← ← ←                    │
-│       → → → LSTM → → →                     │
-├─────────────────────────────────────────────┤
-│          GlobalMaxPooling1D                 │
-├─────────────────────────────────────────────┤
-│          Dense (64) + ReLU                  │
-├─────────────────────────────────────────────┤
-│            Dropout (0.5)                    │
-├─────────────────────────────────────────────┤
-│          Dense (32) + ReLU                  │
-├─────────────────────────────────────────────┤
-│       Dense (1) + Sigmoid → Output          │
-└─────────────────────────────────────────────┘
-```
-
-### Mô hình 2 — BiGRU + Attention (Nâng cao)
-
-```
-Input (256) → Embedding (20000×128) → SpatialDropout1D (0.2)
-    → BiGRU Layer 1 (128) → BiGRU Layer 2 (64)
-    → [Attention Layer] + [GlobalMaxPooling1D]
-    → Concatenate → Dense (128) + BatchNorm + Dropout (0.5)
-    → Dense (64) + Dropout (0.3) → Dense (1, Sigmoid) → Spam/Ham
-```
-
-```
-┌─────────────────────────────────────────────┐
-│              Input (MAX_LEN=256)            │
-├─────────────────────────────────────────────┤
-│         Embedding (20000 × 128)             │
-├─────────────────────────────────────────────┤
-│          SpatialDropout1D (0.2)             │
-├─────────────────────────────────────────────┤
-│   Bidirectional GRU Layer 1 (128 units)     │
-├─────────────────────────────────────────────┤
-│   Bidirectional GRU Layer 2 (64 units)      │
-├──────────────────┬──────────────────────────┤
-│  Attention Layer │   GlobalMaxPooling1D     │
-├──────────────────┴──────────────────────────┤
-│              Concatenate                    │
-├─────────────────────────────────────────────┤
-│     Dense (128) + BatchNorm + Dropout       │
-├─────────────────────────────────────────────┤
-│       Dense (64) + Dropout (0.3)            │
-├─────────────────────────────────────────────┤
-│       Dense (1) + Sigmoid → Output          │
-└─────────────────────────────────────────────┘
-```
-
-### Cải tiến của Mô hình 2 so với Baseline
-
-| Cải tiến | Mô tả |
-|:---------|:-------|
-| **GRU thay LSTM** | Ít tham số hơn (2 gates vs 3 gates), huấn luyện nhanh hơn |
-| **Stacked BiGRU (2 lớp)** | Trích xuất features ở mức trừu tượng cao hơn |
-| **Attention Mechanism** | Tập trung vào từ khóa quan trọng cho phân loại |
-| **Dual Pooling** | Kết hợp Attention + MaxPooling qua Concatenate |
-| **BatchNormalization** | Ổn định và tăng tốc huấn luyện |
-
----
-
-## 📊 Kết quả
-
-### Dataset Overview
-
-| Thuộc tính | Giá trị |
-|:-----------|:--------|
-| Tổng số mẫu | 5,170 emails |
-| Lớp Ham (không spam) | 3,672 (71%) |
-| Lớp Spam (thư rác) | 1,498 (29%) |
-| Tỷ lệ Ham:Spam | ≈ 2.45:1 |
-| Train / Val / Test | 70% / 15% / 15% |
-
-### Bảng so sánh tổng hợp 6 thí nghiệm
-
-
-| # | Mô hình | Optimizer | Regularization | Accuracy | Precision | Recall (Spam) | F1-Score |
-|:-:|:--------|:----------|:---------------|:--------:|:---------:|:-------------:|:--------:|
-| 1 | BiLSTM | Adam | Dropout=0.5 | *0.988* | *0.973* | * 0.986* | *0.980* |
-| 2 | BiLSTM | SGD (m=0.9) | Dropout=0.5 | *0.984* | *0.968* | *0.977* | *0.973* |
-| 3 | BiLSTM | AdamW | Weight Decay | *0.985* | *0.956* | *0.995* | *0.975* |
-| 4 | **BiGRU+Attn** | **Adam** | **Dropout=0.5** | ***0.9813*** | ***0.9437*** | ***0.9954*** | ***0.9689*** |
-| 5 | BiGRU+Attn | SGD (m=0.9) | Dropout=0.5 | *0.9813* | *0.9556* | *0.9817* | *0.9685* |
-| 6 | BiGRU+Attn | AdamW | Weight Decay | *0.9880* | *0.9817* | *0.9772* | *0.9794* |
-
-> 📌 *Cập nhật kết quả sau khi chạy notebook. Dòng in đậm là mô hình tốt nhất.*
-
-### Kết quả trực quan
-
-<details>
-<summary>📊 Phân bố dữ liệu (Click để xem)</summary>
-
-![Class Distribution](results/class_distribution.png)
-![Text Length Distribution](results/text_length_distribution.png)
-
-</details>
-
-<details>
-<summary>📈 Learning Curves (Click để xem)</summary>
-
-![BiLSTM Learning Curves](results/learning_curves_bilstm.png)
-![BiGRU+Attention Learning Curves](results/learning_curves_bigru_attention.png)
-
-</details>
-
-<details>
-<summary>🎯 Evaluation — Confusion Matrix & PR Curve (Click để xem)</summary>
-
-![BiLSTM Evaluation](results/eval_bilstm.png)
-![BiGRU+Attention Evaluation](results/eval_bigru_attention.png)
-
-</details>
-
-<details>
-<summary>🏆 So sánh tổng hợp (Click để xem)</summary>
-
-![Final Comparison](results/final_comparison_all_models.png)
-
-</details>
-
-<details>
-<summary>🔍 Phân tích lỗi (Click để xem)</summary>
-
-![Error Analysis](results/error_analysis.png)
-
-</details>
-
----
-
-## 🔧 Hyperparameters
+### Hyperparameters (Phase 1 — Recurrent)
 
 | Parameter | Value |
 |:----------|:------|
@@ -394,150 +185,239 @@ Input (256) → Embedding (20000×128) → SpatialDropout1D (0.2)
 | `EMBEDDING_DIM` | 128 |
 | `BATCH_SIZE` | 32 |
 | `EPOCHS` (max) | 30 |
-| `LEARNING_RATE` (Adam) | 1e-3 |
-| `LEARNING_RATE` (SGD) | 1e-2 |
+| `LR` (Adam) | 1 × 10⁻³ |
+| `LR` (SGD) | 1 × 10⁻² |
 | `MOMENTUM` (SGD) | 0.9 |
 | `DROPOUT` | 0.5 |
-| `WEIGHT_DECAY` | 1e-4 |
+| `WEIGHT_DECAY` (AdamW) | 1 × 10⁻⁴ |
 | `EARLY_STOPPING_PATIENCE` | 5 |
 | `LR_REDUCE_PATIENCE` | 3 |
 | `LR_REDUCE_FACTOR` | 0.5 |
+| Class weight balancing | Enabled |
+| `RANDOM_SEED` | 42 |
+
+### Hyperparameters (Phase 2 — BERT MoE)
+
+| Parameter | Value |
+|:----------|:------|
+| Base model | `bert-base-uncased` |
+| `MAX_LEN` | 128 |
+| `BATCH_SIZE` | 16 |
+| `EPOCHS` | 5 |
+| `LR` (AdamW) | 2 × 10⁻⁵ |
+| `LR` (SGD) | 1 × 10⁻³ |
+| `WEIGHT_DECAY` | 1 × 10⁻² |
+| Number of experts | 3 |
+| Expert hidden dim | 256 |
+| `DROPOUT` | 0.3 |
 | `RANDOM_SEED` | 42 |
 
 ---
 
-## 📐 Pipeline xử lý
+## Results
 
-```
-┌──────────────┐     ┌──────────────┐     ┌──────────────┐     ┌──────────────┐
-│  Raw Email   │────▶│ Text Cleaning│────▶│ Tokenization │────▶│   Padding    │
-│  (HTML, URL) │     │ (Lowercase,  │     │ (Keras, 20K  │     │ (MAX_LEN=    │
-│              │     │  Regex)      │     │  vocab)      │     │  256)        │
-└──────────────┘     └──────────────┘     └──────────────┘     └──────┬───────┘
-                                                                      │
-                                                                      ▼
-┌──────────────┐     ┌──────────────┐     ┌──────────────┐     ┌──────────────┐
-│   Output     │◀────│  Sigmoid     │◀────│ Dense Layers │◀────│ BiLSTM/BiGRU │
-│  Spam/Ham    │     │  Threshold   │     │ + Dropout    │     │ + Attention  │
-└──────────────┘     └──────────────┘     └──────────────┘     └──────────────┘
-```
+### Phase 1 — Recurrent Models
 
-### Tiền xử lý dữ liệu
+| # | Model | Optimizer | Regularization | Accuracy | Precision | Recall (Spam) | F1-Score |
+|:-:|:------|:----------|:---------------|:--------:|:---------:|:-------------:|:--------:|
+| 1 | **BiLSTM** | Adam | Dropout 0.5 | **0.9950** | **0.9910** | **1.0000** | **0.9955** |
+| 2 | BiLSTM | SGD (m=0.9) | Dropout 0.5 | 0.9866 | 0.9792 | 0.9970 | 0.9880 |
+| 3 | BiLSTM | AdamW | Weight Decay | 0.9933 | 0.9880 | 1.0000 | 0.9940 |
+| 4 | BiGRU+Attn | Adam | Dropout 0.5 | — | — | — | — |
+| 5 | BiGRU+Attn | SGD (m=0.9) | Dropout 0.5 | — | — | — | — |
+| 6 | BiGRU+Attn | AdamW | Weight Decay | — | — | — | — |
 
-```python
-def preprocess_email(text):
-    text = re.sub(r'^Subject:\s*', '', text)     # Loại bỏ prefix Subject
-    text = re.sub(r'<[^>]+>', ' ', text)          # Loại bỏ HTML tags
-    text = re.sub(r'http[s]?://\S+', ' ', text)  # Loại bỏ URLs
-    text = re.sub(r'\S+@\S+', ' ', text)          # Loại bỏ email addresses
-    text = text.lower()                            # Lowercase
-    text = re.sub(r'[^a-z0-9\s]', ' ', text)     # Loại bỏ ký tự đặc biệt
-    return text.strip()
-```
+> Experiments 4–6 were conducted in the midterm phase. See `midterm_exam/BiLSTMandBiGRU+Attention.ipynb` for full results.
+
+### Phase 2 — BERT + Mixture of Experts
+
+| # | Model | Strategy | Accuracy | Precision | Recall (Spam) | F1-Score |
+|:-:|:------|:---------|:--------:|:---------:|:-------------:|:--------:|
+| 1 | BERT MoE | Zero-Shot | — | — | — | — |
+| 2 | **BERT MoE** | **AdamW — Full FT** | **0.9807** | **0.9790** | **0.9864** | **0.9827** |
+| 3 | BERT MoE | SGD — Full FT | 0.9068 | 0.9092 | 0.9244 | 0.9167 |
+| 4 | BERT MoE | AdamW — Frozen | 0.9278 | 0.9055 | 0.9713 | 0.9372 |
+
+> Zero-shot qualitative results are in `results/eval_bert_zeroshot.png`.
+
+### Visualizations
+
+<details>
+<summary>Data Analysis</summary>
+
+![Class Distribution](results/class_distribution.png)
+![Text Length Distribution](results/text_length_distribution.png)
+
+</details>
+
+<details>
+<summary>Phase 1 — Learning Curves</summary>
+
+![BiLSTM (Adam)](results/learning_curves_bilstm.png)
+![BiLSTM (SGD)](results/learning_curves_bilstm_sgd.png)
+![BiLSTM (AdamW)](results/learning_curves_bilstm_wd.png)
+
+</details>
+
+<details>
+<summary>Phase 1 — Evaluation (Confusion Matrix & PR Curve)</summary>
+
+![BiLSTM (Adam)](results/eval_bilstm.png)
+![BiLSTM (SGD)](results/eval_bilstm_sgd.png)
+![BiLSTM (AdamW)](results/eval_bilstm_wd.png)
+![Baseline Comparison](results/comparison_experiments_baseline.png)
+
+</details>
+
+<details>
+<summary>Phase 2 — Learning Curves</summary>
+
+![BERT MoE (AdamW)](results/learning_curves_bert_adamw.png)
+![BERT MoE (SGD)](results/learning_curves_bert_sgd.png)
+![BERT MoE (Frozen)](results/learning_curves_bert_frozen.png)
+
+</details>
+
+<details>
+<summary>Phase 2 — Evaluation</summary>
+
+![BERT MoE Zero-Shot](results/eval_bert_zeroshot.png)
+![BERT MoE (AdamW)](results/eval_bert_adamw.png)
+![BERT MoE (SGD)](results/eval_bert_sgd.png)
+![BERT MoE (Frozen)](results/eval_bert_frozen.png)
+
+</details>
+
+<details>
+<summary>Final Comparison — All Models</summary>
+
+![Final Comparison](results/final_comparison_all_models.png)
+![Error Analysis](results/error_analysis.png)
+
+</details>
 
 ---
 
-## 📂 Files trên Google Drive
+## Getting Started
 
-Sau khi chạy notebook, các files được lưu tại `/content/drive/MyDrive/dataset_dl/`:
+### Requirements
 
-| File | Mô tả | Kích thước |
-|:-----|:-------|:-----------|
-| `spam_model.keras` | Model tốt nhất (BiGRU+Attention) | ~15 MB |
-| `tokenizer.pickle` | Tokenizer đã fit | ~2 MB |
-| `bilstm_baseline.keras` | BiLSTM + Adam + Dropout | ~12 MB |
-| `bigru_attention.keras` | BiGRU+Attn + Adam + Dropout | ~15 MB |
-| `experiment_results.csv` | Bảng kết quả tổng hợp | ~1 KB |
-| `*.png` | Biểu đồ và hình ảnh kết quả | ~100 KB/file |
+| Dependency | Version |
+|:-----------|:--------|
+| Python | ≥ 3.10 |
+| TensorFlow / Keras | ≥ 2.12 |
+| PyTorch | ≥ 2.0 |
+| Transformers (HuggingFace) | ≥ 4.35 |
+| scikit-learn | ≥ 1.2 |
+| pandas | ≥ 1.5 |
+| numpy | ≥ 1.23 |
+| matplotlib / seaborn | ≥ 3.6 / 0.12 |
 
----
+### Option A — Google Colab (Recommended)
 
-## 🧪 Thí nghiệm thực hiện
+Both notebooks are designed to run on Google Colab with a GPU runtime.
 
-### So sánh Optimizer
+1. Open the notebook for the phase you want to run:
+   - **Phase 1 (Midterm):** `midterm_exam/BiLSTMandBiGRU+Attention.ipynb`
+   - **Phase 2 (Final):** `final_exam/BiLSTMandBERT_MoE.ipynb`
+2. In Colab: **Runtime → Change runtime type → GPU (T4)**
+3. Mount your Google Drive when prompted and set the `DRIVE_PATH` variable to point to your dataset folder.
+4. Run cells sequentially from top to bottom.
 
-| Optimizer | Đặc điểm | Ưu điểm | Nhược điểm |
-|:----------|:---------|:---------|:-----------|
-| **Adam** (lr=1e-3) | Adaptive learning rate | Hội tụ nhanh, ổn định | Có thể generalize kém hơn SGD |
-| **SGD** (lr=1e-2, m=0.9) | Fixed learning rate + momentum | Generalization tốt | Hội tụ chậm, nhạy cảm với lr |
-
-### So sánh Regularization
-
-| Kỹ thuật | Cơ chế | Ưu điểm | Nhược điểm |
-|:---------|:-------|:---------|:-----------|
-| **Dropout** (p=0.5) | Ngẫu nhiên tắt neurons | Hiệu quả với data ít | Tăng variance khi inference |
-| **Weight Decay** (λ=1e-4) | L2 penalty trên weights | Giới hạn complexity | Kém hiệu quả với dataset nhỏ |
-
----
-
-## 🤝 Đóng góp
-
-Contributions, issues và feature requests đều được hoan nghênh!
+### Option B — Local Installation
 
 ```bash
-# Fork repo
-# Tạo branch mới
-git checkout -b feature/amazing-feature
+git clone https://github.com/NhatTien1114/spam-email-detection.git
+cd spam-email-detection
 
-# Commit changes
-git commit -m 'Add amazing feature'
+python -m venv venv
+# Windows
+venv\Scripts\activate
+# macOS / Linux
+source venv/bin/activate
 
-# Push to branch
-git push origin feature/amazing-feature
-
-# Mở Pull Request
+pip install tensorflow torch transformers scikit-learn pandas numpy matplotlib seaborn
 ```
 
+### Inference — Load a Saved Model
+
+#### BiLSTM (TensorFlow / Keras)
+
+```python
+import pickle
+from tensorflow import keras
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+
+model = keras.models.load_model("email_spam_bertmoe/spam_model_bilstm.keras")
+
+with open("email_spam_bertmoe/tokenizer_bilstm.pickle", "rb") as f:
+    tokenizer = pickle.load(f)
+
+def predict_bilstm(text, threshold=0.5):
+    seq = tokenizer.texts_to_sequences([text])
+    padded = pad_sequences(seq, maxlen=256, padding="post", truncating="post")
+    prob = model.predict(padded, verbose=0)[0][0]
+    label = "SPAM" if prob >= threshold else "HAM"
+    print(f"{label}  |  confidence: {prob:.4f}")
+
+predict_bilstm("Congratulations! You have won $1,000,000! Claim now!")
+predict_bilstm("Hi, are you available for the team meeting tomorrow?")
+```
+
+#### BERT MoE (PyTorch + HuggingFace)
+
+```python
+import torch
+from transformers import BertTokenizer, BertModel
+
+# Load tokenizer and model weights
+tokenizer = BertTokenizer.from_pretrained("email_spam_bertmoe/bert_moe_best")
+# Instantiate your BertMoEClassifier class, then load state dict:
+# model.load_state_dict(torch.load("email_spam_bertmoe/bert_moe_adamw.pt", map_location="cpu"))
+# model.eval()
+
+def predict_bert_moe(text, model, tokenizer, threshold=0.5):
+    inputs = tokenizer(text, return_tensors="pt", truncation=True,
+                       max_length=128, padding="max_length")
+    with torch.no_grad():
+        logits = model(**inputs)
+    prob = torch.sigmoid(logits).item()
+    label = "SPAM" if prob >= threshold else "HAM"
+    print(f"{label}  |  confidence: {prob:.4f}")
+```
+
+> See the notebook `final_exam/BiLSTMandBERT_MoE.ipynb` for the full `BertMoEClassifier` class definition required to load the `.pt` checkpoints.
+
 ---
 
-## 👥 Tác giả
+## Authors
 
-<table>
-  <tr>
-    <td align="center">
-      <a href="https://github.com/NhatTien1114">
-        <img src="https://github.com/NhatTien1114.png" width="100px;" alt="NhatTien1114"/>
-        <br />
-        <sub><b>Tống Nguyễn Nhật Tiến</b></sub>
-      </a>
-    </td>
-    <td align="center">
-      <a href="https://github.com/NguyenTiePhat">
-        <br />
-        <sub><b>Nguyễn Tiến Phát</b></sub>
-      </a>
-    </td>
-  </tr>
-</table>
+| Name | Student ID |
+|:-----|:-----------|
+| Tống Nguyễn Nhật Tiến | 23684961 |
+| Nguyễn Tiến Phát | 23689101 |
 
-**Đồ án môn:** Học sâu (Deep Learning)
-**Đề tài:** #20 — Phát hiện Spam Email
-**Năm học:** 2025 – 2026
+**Course:** Deep Learning · Ho Chi Minh City University of Technology and Education (HCMUTE)  
+**Academic year:** 2025–2026
 
 ---
 
-## 📚 Tài liệu tham khảo
+## References
 
 1. I. Goodfellow, Y. Bengio, and A. Courville, *Deep Learning*, MIT Press, 2016.
 2. S. Hochreiter and J. Schmidhuber, "Long Short-Term Memory," *Neural Computation*, vol. 9, no. 8, pp. 1735–1780, 1997.
 3. K. Cho et al., "Learning Phrase Representations using RNN Encoder-Decoder for Statistical Machine Translation," *EMNLP*, 2014.
 4. D. Bahdanau, K. Cho, and Y. Bengio, "Neural Machine Translation by Jointly Learning to Align and Translate," *ICLR*, 2015.
-5. D. P. Kingma and J. Ba, "Adam: A Method for Stochastic Optimization," *ICLR*, 2015.
-6. N. Srivastava et al., "Dropout: A Simple Way to Prevent Neural Networks from Overfitting," *JMLR*, vol. 15, 2014.
-7. Y. Kim, "Convolutional Neural Networks for Sentence Classification," *EMNLP*, 2014.
-
----
-
-## 📄 License
-
-Distributed under the MIT License. See [`LICENSE`](LICENSE) for more information.
+5. J. Devlin, M.-W. Chang, K. Lee, and K. Toutanova, "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding," *NAACL*, 2019.
+6. N. Shazeer et al., "Outrageously Large Neural Networks: The Sparsely-Gated Mixture-of-Experts Layer," *ICLR*, 2017.
+7. D. P. Kingma and J. Ba, "Adam: A Method for Stochastic Optimization," *ICLR*, 2015.
+8. N. Srivastava et al., "Dropout: A Simple Way to Prevent Neural Networks from Overfitting," *JMLR*, vol. 15, 2014.
+9. I. Loshchilov and F. Hutter, "Decoupled Weight Decay Regularization," *ICLR*, 2019.
 
 ---
 
 <div align="center">
 
-**⭐ Nếu dự án hữu ích, hãy cho một star nhé! ⭐**
-
-Made with ❤️ by [NhatTien1114](https://github.com/NhatTien1114)
+*Made for the Deep Learning course at HCMUTE · 2025–2026*
 
 </div>
